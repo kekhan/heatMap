@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heat Map</title>
+
+</head>
+<body>
+	<div id = "graphWrapper"></div>
+	<script src = "http://d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript">
+	var url = "https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json";
+	var width = 600;
+	var height = 500;
+	var margin = 30;
+	var padding = 30;
+	var xScale = d3.scale.linear().range([0,width]);
+	var yScale = d3.scale.linear().range([height,0]);
+
+	var svg = d3.select("#graphWrapper")
+                .append('svg')
+	            .attr("width",width + padding +margin)
+	            .attr("height",height + padding + margin)
+	            .append("g")
+	            .attr('transform','translate(' + padding + ',' + padding + ')');
+	
+
+	d3.json(url, function(error,data){
+		data = data.monthlyVariance;
+		console.log(data);
+
+		var year =[];
+		var month = [];
+		var variance = [];
+		for (var i = 0; i<data.length;i++){
+			year.push(data[i].year);
+			month.push(data[i].month);
+			variance.push(data[i].variance);
+		} 
+
+
+
+		xDomain = d3.extent(year,function(el){
+			return parseInt(el);
+		});
+		yDomain = d3.extent(month,function(el){
+			return parseInt(el);
+		});
+
+		xScale.domain(xDomain);
+		yScale.domain(yDomain);
+
+		rects = svg.selectAll("g.rects")
+		            .data(data)
+		            .enter()
+		            .append("g")
+		            .attr("class","rects");
+
+		        rects.attr("transform",function(d){
+		        	console.log(d.year,d.month);
+		
+		        	x = xScale(d.year);
+		        	y = yScale(d.month);
+		        	return 'translate(' + x + ',' + y + ')';
+		        });
+
+		        rects.append("rect")
+		             .attr("width", '10')
+
+		            .attr("height",function(d){
+		                return 50;
+		            })
+		            .attr("fill", "teal");
+
+
+
+	});
+	</script>
+</body>
+</html>
