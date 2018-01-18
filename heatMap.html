@@ -2,9 +2,15 @@
 <html>
 <head>
 	<title>Heat Map</title>
+	<style type="text/css">
+	    h1{
+	    	padding-left: 50px;
+	    }
+	</style>
 
 </head>
 <body>
+	<h1>Monthly Global Land-Surface Temperature</h1>
 	<div id = "graphWrapper"></div>
 	<script src = "http://d3js.org/d3.v3.min.js"></script>
 	<script type="text/javascript">
@@ -13,20 +19,23 @@
 	var height = 500;
 	var margin = 30;
 	var padding = 30;
-	var xScale = d3.scale.linear().range([0,width]);
-	var yScale = d3.scale.linear().range([height,0]);
+	var xScale = d3.scale.linear().range([0,width + padding + margin]);
+	var yScale = d3.scale.linear().range([padding + margin + height,0]);
 
 	var svg = d3.select("#graphWrapper")
                 .append('svg')
-	            .attr("width",width + padding +margin)
-	            .attr("height",height + padding + margin)
+	            .attr("width",width + padding +margin+ 150)
+	            .attr("height",height + padding + margin+150)
 	            .append("g")
 	            .attr('transform','translate(' + padding + ',' + padding + ')');
 	
 
 	d3.json(url, function(error,data){
+		var base_vari = data.baseTemperature;
 		data = data.monthlyVariance;
 		console.log(data);
+		
+		console.log(base_vari);
 
 		var year =[];
 		var month = [];
@@ -46,8 +55,16 @@
 			return parseInt(el);
 		});
 
+
 		xScale.domain(xDomain);
 		yScale.domain(yDomain);
+
+		var xAxis = d3.svg.axis().scale(xScale)
+		                 .orient("bottom")
+		                 .ticks(15);
+		var yAxis = d3.svg.axis().scale(yScale)
+		                .orient("left")
+		                .ticks(12);
 
 		rects = svg.selectAll("g.rects")
 		            .data(data)
@@ -64,12 +81,63 @@
 		        });
 
 		        rects.append("rect")
-		             .attr("width", '10')
+		             .attr("width", '10px')
 
 		            .attr("height",function(d){
 		                return 50;
 		            })
-		            .attr("fill", "teal");
+		            .attr("fill", function(d){
+		            	temp = (d.variance/base_vari)*100;
+		            	if(temp >= 12){
+		            		return "red";
+		            	}
+		            	else if(temp >= 10){
+		            		return "orange";
+		            	}
+		            	else if (temp >= 8){
+		            		return "yellow";
+		            	}
+		            	else if(temp >= 4){
+		            		return "green";
+		            	}
+		            	else if (temp >= 0){
+		            		return "blue";
+		            	}
+		            	else if(temp<0){
+		            		return "#00FFFE"
+		            	}
+
+		            });
+		 // x axis
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + 
+                ((height + margin + padding)+50)+ ")")
+            .call(xAxis);
+
+    svg.append("text")             
+      .attr("transform",
+            "translate(" + (width/2) + " ," + 
+                           (height + 150) + ")")
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Year");
+
+          //the y axis
+        svg.append("g")
+            .attr("class", "y axis")
+                  .attr("transform",
+            "translate(" + (0) + " ," + 
+                           (50) + ")")
+            .call(yAxis);
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - 35)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Month");
+
 
 
 
