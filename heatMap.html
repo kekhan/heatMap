@@ -87,7 +87,7 @@
 		                return 50;
 		            })
 		            .attr("fill", function(d){
-		            	temp = (d.variance/base_vari)*100;
+		            	temp = base_vari - d.variance;
 		            	if(temp >= 12){
 		            		return "red";
 		            	}
@@ -108,6 +108,30 @@
 		            	}
 
 		            });
+		rects.append("text")
+		        .attr("y", ".4em") // change dx and dy in order to center in the circle.
+		        //.attr("x","1.5em")
+		        .attr("fill","purple")
+  				.style("text-anchor", "end")
+		        .text(function(d,i){
+		        	temp = base_vari - d.variance;
+		        	CtoF = (temp * 1.8) + 32;
+		        	return Math.floor(temp) + "˚F" +"\n";
+		        })
+		        //.style("position","absolute")
+		        .style("display","none");
+
+        rects.on("mouseover",function(){
+        	rect = d3.select(this);
+        	rect.select('text')
+        	    .style('display','block');
+
+        });
+        rects.on("mouseout",function(){
+        	d3.select(this)
+        	    .select('text')
+        	    .style('display','none');
+        });
 		 // x axis
         svg.append("g")
             .attr("class", "x axis")
@@ -137,6 +161,7 @@
       .attr("dy", "1em")
       .style("text-anchor", "middle")
       .text("Month");
+
 
 
 
