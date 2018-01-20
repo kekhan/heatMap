@@ -88,23 +88,40 @@
 		            })
 		            .attr("fill", function(d){
 		            	temp = base_vari - d.variance;
-		            	if(temp >= 12){
-		            		return "red";
+		            	if(temp >= 12.7){
+		            		return "#820333";
 		            	}
-		            	else if(temp >= 10){
-		            		return "orange";
+		            	else if(temp >= 11.6){
+		            		return "#F0433A";
 		            	}
-		            	else if (temp >= 8){
-		            		return "yellow";
+		            	else if (temp >= 10.5){
+		            		return "#FF4F17";
 		            	}
-		            	else if(temp >= 4){
+		            	else if(temp >= 9.4){
+		            		return "#E87409";
+		            	}
+		            	else if (temp >= 8.3){
+		            		return "#E87409";
+		            	}
+		            	else if(temp >= 7.2){
+		            		return "#FCE781"
+		            	}
+		            	else if (temp >= 6.1){
+		            		return "#BEF34B";
+		            	}
+		            	else if (temp >= 5){
+		            		return "#3CF36C";
+		            	}
+		            	else if (temp >= 3.9)
+		            	{
 		            		return "green";
 		            	}
-		            	else if (temp >= 0){
+		            	else if (temp >= 2.7){
 		            		return "blue";
+
 		            	}
-		            	else if(temp<0){
-		            		return "#00FFFE"
+		            	else if (temp >= 0){
+		            		return "purple";
 		            	}
 
 		            });
@@ -116,7 +133,7 @@
 		        .text(function(d,i){
 		        	temp = base_vari - d.variance;
 		        	CtoF = (temp * 1.8) + 32;
-		        	return Math.floor(temp) + "˚F" +"\n";
+		        	return Math.floor(CtoF) + "˚F" +"\n";
 		        })
 		        //.style("position","absolute")
 		        .style("display","none");
