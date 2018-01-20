@@ -73,7 +73,7 @@
 		            .attr("class","rects");
 
 		        rects.attr("transform",function(d){
-		        	console.log(d.year,d.month);
+		        	//console.log(d.year,d.month);
 		
 		        	x = xScale(d.year);
 		        	y = yScale(d.month);
@@ -81,13 +81,16 @@
 		        });
 
 		        rects.append("rect")
-		             .attr("width", '10px')
+		             .attr("width", '5px')
+		             .style("margin","50px")
 
 		            .attr("height",function(d){
 		                return 50;
 		            })
 		            .attr("fill", function(d){
-		            	temp = base_vari - d.variance;
+
+		            	temp = (base_vari )+ (d.variance);
+		            	//console.log(temp);
 		            	if(temp >= 12.7){
 		            		return "#820333";
 		            	}
@@ -120,7 +123,7 @@
 		            		return "blue";
 
 		            	}
-		            	else if (temp >= 0){
+		            	else if (temp <= 0){
 		            		return "purple";
 		            	}
 
@@ -128,12 +131,28 @@
 		rects.append("text")
 		        .attr("y", ".4em") // change dx and dy in order to center in the circle.
 		        //.attr("x","1.5em")
-		        .attr("fill","purple")
+		        .attr("fill",function(d){
+		        	if (d.year < 1800){
+		        		return "teal"
+		        	}
+		        	else {
+		        		return "black"
+		        	}
+		        })
   				.style("text-anchor", "end")
+  				.style("font-size",function(d){
+  					if(d.year < 1800){
+  						return "0.9em"
+  					}
+  					else{
+  						return "2em";
+  					}
+  				})
 		        .text(function(d,i){
-		        	temp = base_vari - d.variance;
+		        	temp = base_vari + (d.variance);
 		        	CtoF = (temp * 1.8) + 32;
-		        	return Math.floor(CtoF) + "˚F" +"\n";
+		        	sentence = d.year + "\n" + Math.floor(CtoF) + "˚F";
+		        	return sentence;
 		        })
 		        //.style("position","absolute")
 		        .style("display","none");
@@ -162,7 +181,7 @@
                            (height + 150) + ")")
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text("Year");
+      .text("Years");
 
           //the y axis
         svg.append("g")
@@ -177,7 +196,7 @@
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text("Month");
+      .text("Months");
 
 
 
